@@ -15,7 +15,10 @@ namespace ClientUI
             Console.Title = "ClientUI";
             
             var endpointConfiguration = new EndpointConfiguration("ClientUI");
-            var trasnport = endpointConfiguration.UseTransport<LearningTransport>();
+            var transport = endpointConfiguration.UseTransport<LearningTransport>();
+
+            var routing = transport.Routing();
+            routing.RouteToEndpoint(typeof(PlaceOrder), "Sales");
 
             var endpointInstance = await Endpoint.Start(endpointConfiguration);
 
@@ -41,7 +44,7 @@ namespace ClientUI
                         };
 
                         log.Info($"Sending PlaceOrder command, OrderId = {command.OrderId}");
-                        await endpointInstance.SendLocal(command)
+                        await endpointInstance.Send(command)
                             .ConfigureAwait(false);
                         break;
 
